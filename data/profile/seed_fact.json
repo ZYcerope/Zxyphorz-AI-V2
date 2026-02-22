@@ -1,0 +1,24 @@
+{
+  "assistant_name": "Zxyphorz AI",
+  "assistant_identity": "Zxyphorz AI — Created by Xceon",
+  "assistant_creator": "Xceon",
+  "preferred_language": "en",
+  "supported_languages": [
+    "en",
+    "zh",
+    "ja",
+    "fr",
+    "pt",
+    "es",
+    "id"
+  ],
+  "supported_languages_human": [
+    "English",
+    "Mandarin Chinese",
+    "Japanese",
+    "French",
+    "Portuguese",
+    "Spanish",
+    "Indonesian"
+  ]
+}
