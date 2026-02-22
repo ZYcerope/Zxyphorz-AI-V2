@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zxyphorz AI — Local Assistant</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">Z</div>
+        <div class="brand-text">
+          <div class="title">Zxyphorz AI</div>
+          <div class="subtitle">Local assistant • no external API</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Quick actions</div>
+        <button class="btn ghost" id="btnHelp">/help</button>
+        <button class="btn ghost" id="btnMemory">/memory</button>
+        <button class="btn ghost" id="btnReset">Reset session</button>
+        <button class="btn ghost" id="btnExport">Export JSON</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Tips</div>
+        <div class="tip">
+          Try: <code>2*(3+4)</code>, <code>summarize: ...</code>, <code>add todo: ...</code>.
+        </div>
+        <div class="tip">
+          Add docs to <code>data/knowledge_base</code> and restart.
+        </div>
+      </div>
+
+      <div class="panel status">
+        <div class="panel-title">Status</div>
+        <div id="statusText">Connecting…</div>
+        <div class="small" id="statusMeta"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="badge">localhost</div>
+          <div class="small">Fast response • deterministic tools • KB search</div>
+        </div>
+        <div class="topbar-right">
+
+          <label class="lang">
+            <span class="small">Language</span>
+            <select id="langSelect" class="select">
+              <option value="en">English</option>
+              <option value="id">Indonesian</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="pt">Portuguese</option>
+              <option value="zh">Mandarin Chinese</option>
+              <option value="ja">Japanese</option>
+            </select>
+          </label>
+
+          <div class="small" id="sessionLabel">Session: —</div>
+        </div>
+      </header>
+
+      <section class="chat" id="chat"></section>
+
+      <footer class="composer">
+        <textarea id="input" rows="2" placeholder="Message Zxyphorz AI… (supports en/zh/ja/fr/pt/es/id) — Ctrl+Enter to send"></textarea>
+        <button class="btn primary" id="btnSend">Send</button>
+      </footer>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
