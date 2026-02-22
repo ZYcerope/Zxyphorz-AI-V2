@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "packs": [
+    {
+      "id": "wikipedia_simple_en_343mb",
+      "title": "Wikipedia (Simple English) — pages-articles dump",
+      "lang": "en",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "A beginner-friendly offline world-knowledge dataset. This single file is ~343MB (compressed).",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/simplewiki/latest/simplewiki-latest-pages-articles.xml.bz2",
+          "filename": "simplewiki-latest-pages-articles.xml.bz2",
+          "approx_size_bytes": 342917678
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "bz2",
+        "default_max_pages": 25000,
+        "min_chars": 240
+      }
+    },
+    {
+      "id": "wikipedia_id_stub_186mb",
+      "title": "Wikipedia (Indonesian) — stub articles",
+      "lang": "id",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "Indonesian stub dump (~186MB compressed). Optional multi-language pack.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/idwiki/latest/idwiki-latest-stub-articles.xml.gz",
+          "filename": "idwiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": 185996385
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 20000,
+        "min_chars": 200
+      }
+    },
+    {
+      "id": "wikipedia_zh_stub_528mb",
+      "title": "Wikipedia (Chinese) — stub articles",
+      "lang": "zh",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "Chinese stub dump (~528MB compressed). Optional.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-stub-articles.xml.gz",
+          "filename": "zhwiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": 527793796
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 15000,
+        "min_chars": 200
+      }
+    },
+    {
+      "id": "wikipedia_ja_stub_404mb",
+      "title": "Wikipedia (Japanese) — stub articles",
+      "lang": "ja",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "Japanese stub dump (~404MB compressed). Optional.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/jawiki/latest/jawiki-latest-stub-articles.xml.gz",
+          "filename": "jawiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": 403772429
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 15000,
+        "min_chars": 200
+      }
+    },
+    {
+      "id": "wikipedia_fr_stub_741mb",
+      "title": "Wikipedia (French) — stub articles",
+      "lang": "fr",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "French stub dump (~741MB compressed). Optional.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/frwiki/latest/frwiki-latest-stub-articles.xml.gz",
+          "filename": "frwiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": 740683631
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 15000,
+        "min_chars": 220
+      }
+    },
+    {
+      "id": "wikipedia_es_stub",
+      "title": "Wikipedia (Spanish) — stub articles",
+      "lang": "es",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "Spanish stub dump. Optional.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/eswiki/latest/eswiki-latest-stub-articles.xml.gz",
+          "filename": "eswiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": null
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 15000,
+        "min_chars": 220
+      }
+    },
+    {
+      "id": "wikipedia_pt_stub",
+      "title": "Wikipedia (Portuguese) — stub articles",
+      "lang": "pt",
+      "license": "CC BY-SA / GFDL (Wikipedia content license)",
+      "description": "Portuguese stub dump. Optional.",
+      "downloads": [
+        {
+          "url": "https://dumps.wikimedia.org/ptwiki/latest/ptwiki-latest-stub-articles.xml.gz",
+          "filename": "ptwiki-latest-stub-articles.xml.gz",
+          "approx_size_bytes": null
+        }
+      ],
+      "process": {
+        "type": "wikipedia_xml",
+        "compression": "gz",
+        "default_max_pages": 15000,
+        "min_chars": 220
+      }
+    }
+  ]
+}
