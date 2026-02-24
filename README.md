@@ -110,7 +110,3 @@ zxyphorz-ai/
 ```bash
 python tests/run.py
 ```
-
-## License
-MIT for the code.  
-Downloaded datasets have their own licenses (e.g., Wikipedia: CC BY-SA / GFDL). Keep attribution if you redistribute processed data.
