@@ -1,26 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""Zxyphorz AI — SLM (Small Local Model) Setup
-
-Adds an optional *Advanced* mode powered by a local GGUF model (llama.cpp).
-Basic mode stays fully functional with zero extra deps.
-
-Commands:
-  python scripts/slm_setup.py recommend
-  python scripts/slm_setup.py download <key>
-  python scripts/slm_setup.py activate <key>
-  python scripts/slm_setup.py status
-  python scripts/slm_setup.py bench   (optional; needs llama-cpp-python)
-
-What this script writes:
-  data/models/<model>.gguf
-  data/models/slm_config.json  (consumed by backend)
-
-Why GGUF?
-- llama.cpp requires GGUF model files.
-"""
-
 import argparse
 import hashlib
 import json
