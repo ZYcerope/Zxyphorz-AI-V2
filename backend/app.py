@@ -1,9 +1,10 @@
-from __future__ import annotations
+ from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import anyio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -25,11 +26,12 @@ from .core.tools.time_tool import TimeTool
 from .core.tools.todo import TodoTool
 from .core.tools.translator import TranslatorTool
 
+from .llm.local_slm import LocalSLM, load_slm_settings
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CFG = AppConfig.from_repo_root(REPO_ROOT)
 
-# Seed facts (stable identity / preferences)
 _seed_facts: Dict[str, Any] = {}
 if CFG.seed_facts_path.exists():
     try:
@@ -44,7 +46,6 @@ kb.load()
 
 tools = ToolRegistry(
     tools=[
-        # Order matters: more "specific" tools first, generic last
         TimeTool(),
         CalculatorTool(),
         SummarizeTool(),
@@ -57,11 +58,10 @@ tools = ToolRegistry(
     ]
 )
 
-engine = ChatEngine(persona=ZXYPHORZ_AI, store=store, kb=kb, tools=tools, seed_facts=_seed_facts)
+slm = LocalSLM(load_slm_settings(CFG.slm_config_path))
+engine = ChatEngine(persona=ZXYPHORZ_AI, store=store, kb=kb, tools=tools, seed_facts=_seed_facts, slm=slm)
 
-app = FastAPI(title="Zxyphorz AI", version="1.1.0")
-
-# Serve frontend
+app = FastAPI(title="Zxyphorz AI", version="1.2.0")
 app.mount("/static", StaticFiles(directory=str(CFG.frontend_dir), html=False), name="static")
 
 
@@ -69,6 +69,7 @@ class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=8000)
     session_id: Optional[str] = None
     language: Optional[str] = Field(default=None, description="Preferred language code (en/zh/ja/fr/pt/es/id)")
+    mode: str = Field(default="basic", description="basic | advanced")
 
 
 class ChatReply(BaseModel):
@@ -84,12 +85,22 @@ def index() -> Any:
 
 @app.get("/api/health")
 def health() -> Dict[str, Any]:
-    return {"ok": True, "assistant": ZXYPHORZ_AI.name, "version": "1.1.0"}
+    st = slm.status()
+    return {
+        "ok": True,
+        "assistant": ZXYPHORZ_AI.name,
+        "version": "1.2.0",
+        "slm": {
+            "available": st.available,
+            "reason": st.reason,
+            "display_name": st.display_name,
+        },
+    }
 
 
 @app.post("/api/chat", response_model=ChatReply)
 def chat(req: ChatRequest) -> Any:
-    resp = engine.handle(req.message, req.session_id, language=req.language)
+    resp = engine.handle(req.message, req.session_id, language=req.language, mode=req.mode)
     return {"session_id": resp.session_id, "reply": resp.reply, "meta": resp.meta}
 
 
@@ -125,6 +136,13 @@ def kb_search(q: str, k: int = 4, language: Optional[str] = None) -> Dict[str, A
     }
 
 
+def _next_or_none(it):
+    try:
+        return next(it)
+    except StopIteration:
+        return None
+
+
 @app.websocket("/ws")
 async def ws_endpoint(ws: WebSocket) -> None:
     await ws.accept()
@@ -136,6 +154,7 @@ async def ws_endpoint(ws: WebSocket) -> None:
                 message = str(payload.get("message", "")).strip()
                 session_id = payload.get("session_id")
                 language = payload.get("language")
+                mode = str(payload.get("mode") or "basic")
             except Exception:
                 await ws.send_text(json.dumps({"type": "error", "message": "Invalid JSON payload."}))
                 continue
@@ -144,19 +163,17 @@ async def ws_endpoint(ws: WebSocket) -> None:
                 await ws.send_text(json.dumps({"type": "error", "message": "Empty message."}))
                 continue
 
-            resp = engine.handle(message, session_id, language=language)
+            sid, start_meta, token_iter = engine.handle_stream(message, session_id, language=language, mode=mode)
 
-            # Streaming: send words in small chunks
-            await ws.send_text(json.dumps({"type": "start", "session_id": resp.session_id, "meta": resp.meta}))
-            words = resp.reply.split(" ")
-            buf = []
-            for w in words:
-                buf.append(w)
-                if len(buf) >= 14:
-                    await ws.send_text(json.dumps({"type": "delta", "text": " ".join(buf) + " "}))
-                    buf = []
-            if buf:
-                await ws.send_text(json.dumps({"type": "delta", "text": " ".join(buf)}))
+            await ws.send_text(json.dumps({"type": "start", "session_id": sid, "meta": start_meta}))
+
+            # run token generation in a worker thread to keep the event loop responsive
+            while True:
+                tok = await anyio.to_thread.run_sync(_next_or_none, token_iter)
+                if tok is None:
+                    break
+                await ws.send_text(json.dumps({"type": "delta", "text": tok}))
+
             await ws.send_text(json.dumps({"type": "end"}))
     except WebSocketDisconnect:
         return
