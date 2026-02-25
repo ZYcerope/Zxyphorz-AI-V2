@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zxyphorz AI — Offline Help</title>
+
+  <!--
+    Zxyphorz AI — Offline Help & Troubleshooting
+
+    Why this file exists:
+    - Helps anyone run the repo locally without asking questions.
+    - Works fully offline (static HTML).
+    - Does not touch the main UI to avoid regressions.
+
+    Open:
+      http://127.0.0.1:8000/static/offline_help.html
+  -->
+
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#101528;
+      --panel2:#0f1320;
+      --text:#e9ecf5;
+      --muted:#a8b0c7;
+      --border:rgba(255,255,255,.08);
+      --ok:#47d18c;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial;
+      --shadow: 0 14px 40px rgba(0,0,0,.45);
+      --r:18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 0%, rgba(82,112,255,.16), transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, rgba(71,209,140,.10), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+    }
+    a{ color:#9bb6ff; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 18px 70px;
+    }
+    .hero{
+      display:flex;
+      gap: 16px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom: 14px;
+    }
+    .brand{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+    }
+    .logo{
+      width:44px;
+      height:44px;
+      border-radius: 16px;
+      display:grid;
+      place-items:center;
+      background: linear-gradient(180deg, rgba(155,182,255,.22), rgba(155,182,255,.06));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+      letter-spacing: .6px;
+    }
+    h1{
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .subtitle{
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      max-width: 720px;
+    }
+    .chips{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .chip{
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .chip.ok{ color: var(--ok); }
+    .chip.warn{ color: var(--warn); }
+    .chip.bad{ color: var(--bad); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .chips{ justify-content:flex-start; }
+    }
+
+    .card{
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-h{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15,19,32,.55);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .card-title{
+      margin: 0;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: .3px;
+    }
+    .card-body{
+      padding: 14px 16px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .toc a{
+      display:block;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(0,0,0,.14);
+      margin-bottom: 8px;
+    }
+    .toc a:hover{
+      background: rgba(155,182,255,.08);
+    }
+
+    h2{
+      margin: 0;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    h3{
+      margin: 16px 0 8px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      color: #d6dcff;
+    }
+    pre{
+      margin: 10px 0 14px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      overflow:auto;
+      color: #dfe4ff;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+    }
+    ul{ margin: 8px 0 14px; padding-left: 18px; }
+    li{ margin: 6px 0; }
+    .callout{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(71,209,140,.06);
+      padding: 12px 12px;
+      margin: 12px 0;
+      color: var(--text);
+    }
+    .callout.warn{
+      background: rgba(255,204,102,.07);
+    }
+    .callout.bad{
+      background: rgba(255,107,107,.07);
+    }
+    .muted{ color: var(--muted); }
+
+    .hr{
+      height: 1px;
+      background: rgba(255,255,255,.08);
+      margin: 14px 0;
+    }
+    .btnrow{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .btn{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color: var(--text);
+      font-weight: 800;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{ background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); }
+    .btn.primary{ background: linear-gradient(180deg, rgba(155,182,255,.14), rgba(155,182,255,.05)); }
+    .btn.danger{ background: linear-gradient(180deg, rgba(255,107,107,.16), rgba(255,107,107,.06)); }
+
+    .footer{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .tag{
+      display:inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="brand">
+        <div class="logo">Z</div>
+        <div>
+          <h1>Zxyphorz AI — Offline Help & Troubleshooting</h1>
+          <div class="subtitle">
+            A practical, offline guide for running this repository reliably on Windows/macOS/Linux.
+            This page does not require JavaScript and does not modify your main UI.
+          </div>
+        </div>
+      </div>
+
+      <div class="chips">
+        <span class="chip ok">Basic mode: no model required</span>
+        <span class="chip warn">Advanced mode: local GGUF model</span>
+        <span class="chip">7 languages supported</span>
+        <span class="chip">No external AI API</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-h">
+          <h2 class="card-title">Quick navigation</h2>
+          <span class="tag">Table of contents</span>
+        </div>
+        <div class="card-body toc">
+          <a href="#quickstart">1) Quickstart (Basic)</a>
+          <a href="#advanced">2) Advanced mode (Local SLM)</a>
+          <a href="#knowledge">3) Knowledge packs (offline real-world data)</a>
+          <a href="#commands">4) Commands & useful prompts</a>
+          <a href="#diagnostics">5) Diagnostics page</a>
+          <a href="#common">6) Common issues and fixes</a>
+          <a href="#performance">7) Performance tips</a>
+          <a href="#clean">8) Keeping the repo clean</a>
+          <a href="#faq">9) FAQ</a>
+
+          <div class="btnrow">
+            <a class="btn primary" href="/" target="_blank" rel="noopener">Open main app</a>
+            <a class="btn" href="/static/diagnostics.html" target="_blank" rel="noopener">Open diagnostics</a>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="card-h">
+          <h2 class="card-title">What this repo is</h2>
+          <span class="tag">Portfolio-ready</span>
+        </div>
+        <div class="card-body">
+          <div class="callout">
+            <strong>Zxyphorz AI</strong> is a local assistant that runs on localhost.
+            It has deterministic tools (calculator, notes, todo, summarizer, translation),
+            offline knowledge retrieval (KB + optional packs), and persistent memory (SQLite).
+          </div>
+
+          <div class="callout warn">
+            <strong>Advanced mode</strong> is optional. It uses a small local model (GGUF) via llama.cpp bindings.
+            If the model isn't installed, the app should still work in Basic mode.
+          </div>
+
+          <div class="callout bad">
+            <strong>Important:</strong> Do not commit large model files or giant knowledge packs into Git.
+            Use scripts to download locally, or use GitHub Releases / Git LFS.
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="muted">
+            Paths you should know:
+            <ul>
+              <li><span class="kbd">frontend/</span> — UI and static pages</li>
+              <li><span class="kbd">backend/</span> — FastAPI server + engine</li>
+              <li><span class="kbd">data/knowledge_base/</span> — curated docs</li>
+              <li><span class="kbd">data/knowledge_packs/</span> — offline packs (optional)</li>
+              <li><span class="kbd">data/storage/</span> — SQLite storage (local)</li>
+              <li><span class="kbd">data/models/</span> — local model files (optional)</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" id="quickstart" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">1) Quickstart (Basic mode)</h2>
+        <span class="tag">Recommended first run</span>
+      </div>
+      <div class="card-body">
+        <p>
+          Basic mode requires only Python and the standard dependencies of this repo. It does not require
+          any local language model. It is the safest way to confirm the app works on your machine.
+        </p>
+
+        <h3>Windows (PowerShell)</h3>
+        <pre>python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python -m backend</pre>
+
+        <h3>macOS / Linux</h3>
+        <pre>python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m backend</pre>
+
+        <p>Open in browser:</p>
+        <pre>http://127.0.0.1:8000</pre>
+
+        <div class="callout">
+          If you want a quick sanity check, open:
+          <ul>
+            <li><a href="/api/health" target="_blank" rel="noopener">/api/health</a></li>
+            <li><a href="/static/diagnostics.html" target="_blank" rel="noopener">/static/diagnostics.html</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="advanced" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">2) Advanced mode (Local SLM)</h2>
+        <span class="tag">Optional • offline</span>
+      </div>
+      <div class="card-body">
+        <p>
+          Advanced mode uses a small open-source GGUF model on your machine (no API).
+          It usually improves fluency, reasoning, and response flexibility.
+        </p>
+
+        <h3>Recommended model for low latency</h3>
+        <ul>
+          <li><strong>Qwen2.5 0.5B Instruct (Q4)</strong> — very fast and multilingual. <span class="tag">GGUF</span></li>
+        </ul>
+
+        <h3>Setup steps</h3>
+        <pre>python scripts/slm_setup.py recommend
+python scripts/slm_setup.py download qwen2_5_0_5b_q4
+python scripts/slm_setup.py activate qwen2_5_0_5b_q4
+pip install -r requirements-advanced.txt
+python -m backend</pre>
+
+        <div class="callout warn">
+          If Advanced is not ready, the UI should still work in Basic mode.
+          You can confirm SLM status in <span class="kbd">/api/health</span> or the Diagnostics page.
+        </div>
+
+        <h3>Benchmark (optional)</h3>
+        <pre>python scripts/slm_setup.py bench</pre>
+
+        <h3>Advanced tuning (fast default)</h3>
+        <pre>python scripts/slm_setup.py activate qwen2_5_0_5b_q4 --n-ctx 2048 --n-batch 256 --max-tokens 256</pre>
+      </div>
+    </section>
+
+    <section class="card" id="knowledge" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">3) Knowledge packs (offline real-world data)</h2>
+        <span class="tag">Optional</span>
+      </div>
+      <div class="card-body">
+        <p>
+          Knowledge packs extend the assistant with real-world text that is searchable offline.
+          The system processes packs into clean JSONL chunks that the retrieval engine can search quickly.
+        </p>
+
+        <h3>Typical workflow</h3>
+        <pre>python scripts/packs.py list
+python scripts/packs.py download wikipedia_simple_en_343mb
+python scripts/packs.py build wikipedia_simple_en_343mb --max-pages 25000</pre>
+
+        <div class="callout">
+          Best practice: keep large pack files out of Git.
+          Store them locally under <span class="kbd">data/knowledge_packs</span>.
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="commands" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">4) Commands & useful prompts</h2>
+        <span class="tag">Basic + Advanced</span>
+      </div>
+      <div class="card-body">
+        <h3>Core commands</h3>
+        <ul>
+          <li><span class="kbd">/help</span> — list tools and commands</li>
+          <li><span class="kbd">/memory</span> — show saved facts</li>
+          <li><span class="kbd">/lang en</span> — set language (en/zh/ja/fr/pt/es/id)</li>
+          <li><span class="kbd">/reset</span> — reset current session data</li>
+        </ul>
+
+        <h3>Tool prompts</h3>
+        <ul>
+          <li><span class="kbd">2*(3+4)</span> — calculator</li>
+          <li><span class="kbd">remember this: build a portfolio</span> — add note</li>
+          <li><span class="kbd">list notes</span> — view notes</li>
+          <li><span class="kbd">add todo: write README</span> — todo item</li>
+          <li><span class="kbd">list todos</span> — view todos</li>
+          <li><span class="kbd">done 1</span> — mark todo done</li>
+          <li><span class="kbd">summarize: ...</span> — summarize text</li>
+          <li><span class="kbd">translate to japanese: thank you</span> — translator</li>
+        </ul>
+
+        <h3>Good questions to test intelligence</h3>
+        <ul>
+          <li>“Explain BM25 vs vector search in simple terms.”</li>
+          <li>“Create a 7-day plan to learn Python basics.”</li>
+          <li>“Summarize this article and extract key action items.”</li>
+          <li>“Compare TCP vs UDP, and give use cases.”</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="diagnostics" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">5) Diagnostics page</h2>
+        <span class="tag">Most useful for debugging</span>
+      </div>
+      <div class="card-body">
+        <p>
+          This repository includes an offline diagnostics page to verify:
+          health endpoint, KB search, chat (basic/advanced), and WebSocket streaming.
+        </p>
+        <pre>http://127.0.0.1:8000/static/diagnostics.html</pre>
+
+        <div class="callout">
+          If something fails on another machine, export the diagnostics report JSON
+          and attach it to your GitHub issue. This makes troubleshooting much faster.
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="common" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">6) Common issues and fixes</h2>
+        <span class="tag">No panic</span>
+      </div>
+      <div class="card-body">
+        <h3>Port 8000 is already in use</h3>
+        <p class="muted">
+          Another app is using the port. Stop the other server or change port when running uvicorn.
+        </p>
+        <pre># Example: run on a different port
+python -m backend --port 8001</pre>
+
+        <h3>Virtual environment not activated</h3>
+        <p class="muted">
+          If you see “module not found”, you likely installed packages outside your venv.
+        </p>
+        <pre># Windows:
+.venv\Scripts\activate
+
+# macOS/Linux:
+source .venv/bin/activate</pre>
+
+        <h3>Advanced mode says llama-cpp-python is not installed</h3>
+        <p class="muted">
+          Install advanced requirements.
+        </p>
+        <pre>pip install -r requirements-advanced.txt</pre>
+
+        <h3>Advanced mode says model file missing</h3>
+        <p class="muted">
+          Download the model and activate it.
+        </p>
+        <pre>python scripts/slm_setup.py download qwen2_5_0_5b_q4
+python scripts/slm_setup.py activate qwen2_5_0_5b_q4</pre>
+
+        <h3>KB search returns 0 hits</h3>
+        <p class="muted">
+          Add content into <span class="kbd">data/knowledge_base/</span>, or build a knowledge pack.
+          Then restart the server.
+        </p>
+
+        <h3>WebSocket streaming fails</h3>
+        <p class="muted">
+          Try HTTP mode (the main UI automatically falls back). You can also check the diagnostics log.
+        </p>
+      </div>
+    </section>
+
+    <section class="card" id="performance" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">7) Performance tips</h2>
+        <span class="tag">Low latency</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Prefer small models for CPU, e.g. Qwen2.5 0.5B Q4.</li>
+          <li>Use <span class="kbd">--max-tokens 256</span> to keep responses fast.</li>
+          <li>Keep context window modest (e.g. <span class="kbd">--n-ctx 2048</span>).</li>
+          <li>Use the diagnostics WebSocket test to measure time-to-first-token (TTFB).</li>
+          <li>If you want even faster startup, run cache warmup scripts (optional).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="clean" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">8) Keeping the repo clean</h2>
+        <span class="tag">Best practices</span>
+      </div>
+      <div class="card-body">
+        <p>
+          Recommended ignores (do not commit these):
+        </p>
+        <pre>__pycache__/
+*.py[cod]
+.venv/
+venv/
+data/storage/*.db
+data/models/
+data/knowledge_packs/raw/
+data/knowledge_packs/processed/*.jsonl</pre>
+
+        <div class="callout bad">
+          Large files should not be committed to the repo.
+          If you need to share them, use GitHub Releases or Git LFS.
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="faq" style="margin-top:14px;">
+      <div class="card-h">
+        <h2 class="card-title">9) FAQ</h2>
+        <span class="tag">Short answers</span>
+      </div>
+      <div class="card-body">
+        <h3>Is this ChatGPT?</h3>
+        <p class="muted">
+          No. Basic mode is deterministic tools + offline retrieval. Advanced mode optionally adds a small local model
+          to generate more natural answers. No external AI API calls are required.
+        </p>
+
+        <h3>Can I deploy it to production?</h3>
+        <p class="muted">
+          This repo is designed for local usage and portfolio demonstration. For production, you should add auth,
+          rate limits, 
